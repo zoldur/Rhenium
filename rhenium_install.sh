@@ -6,7 +6,7 @@ CONFIGFOLDER='/root/.Rhenium'
 COIN_DAEMON='Rheniumd'
 COIN_CLI='Rhenium-cli'
 COIN_PATH='/usr/local/bin/'
-COIN_TGZ='https://github.com/zoldur/Rhenium/releases/download/v2.3.0.0/Rhenium.tar.gz'
+COIN_TGZ='https://github.com/Rheniumnetwork/RheniumZeroWallets/raw/master/Linux16.04.zip'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 COIN_NAME='Rhenium'
 COIN_PORT=5110
@@ -21,12 +21,15 @@ NC='\033[0m'
 
 
 function download_node() {
-  echo -e "Prepare to download ${GREEN}$COIN_NAME${NC}."
+  echo -e "Downloading ${GREEN}$COIN_NAME${NC}."
   cd $TMP_FOLDER >/dev/null 2>&1
   wget -q $COIN_TGZ
   compile_error
-  tar xvzf $COIN_ZIP -C $COIN_PATH >/dev/null 2>&1
-  cd - >/dev/null 2>&1
+  unzip $COIN_ZIP >/dev/null 2>&1
+  cd Linux16.04
+  chmod +x $COIN_CLI $COIN_DAEMON >/dev/null 2>&1
+  cp $COIN_CLI $COIN_DAEMON $COIN_PATH >/dev/null 2>&1
+  cd ~ >/dev/null 2>&1
   rm -rf $TMP_FOLDER >/dev/null 2>&1
   clear
 }
@@ -198,7 +201,7 @@ apt-get update >/dev/null 2>&1
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
 build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
 libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
-libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev  libdb5.3++ unzip libzmq5 >/dev/null 2>&1
+libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev unzip libzmq5 >/dev/null 2>&1
 if [ "$?" -gt "0" ];
   then
     echo -e "${RED}Not all required packages were installed properly. Try to install them manually by running the following commands:${NC}\n"
